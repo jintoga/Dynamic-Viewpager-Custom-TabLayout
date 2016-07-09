@@ -18,10 +18,10 @@ public class FragmentParent extends Fragment {
     private ViewPager viewPager;
     private ViewPagerAdapter adapter;
 
-
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+        Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_parent, container, false);
         getIDs(view);
         setEvents();
@@ -30,9 +30,9 @@ public class FragmentParent extends Fragment {
 
     private void getIDs(View view) {
         viewPager = (ViewPager) view.findViewById(R.id.my_viewpager);
-        adapter = new ViewPagerAdapter(getFragmentManager(), getActivity());
-        viewPager.setAdapter(adapter);
         tabLayout = (TabLayout) view.findViewById(R.id.my_tab_layout);
+        adapter = new ViewPagerAdapter(getFragmentManager(), getActivity(), viewPager, tabLayout);
+        viewPager.setAdapter(adapter);
     }
 
     int selectedTabPosition;
@@ -46,15 +46,12 @@ public class FragmentParent extends Fragment {
                 viewPager.setCurrentItem(tab.getPosition());
                 selectedTabPosition = viewPager.getCurrentItem();
                 Log.d("Selected", "Selected " + tab.getPosition());
-
             }
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
                 super.onTabUnselected(tab);
                 Log.d("Unselected", "Unselected " + tab.getPosition());
-
-
             }
         });
     }
@@ -66,8 +63,7 @@ public class FragmentParent extends Fragment {
         fragmentChild.setArguments(bundle);
         adapter.addFrag(fragmentChild, pagename);
         adapter.notifyDataSetChanged();
-        if (adapter.getCount() > 0)
-            tabLayout.setupWithViewPager(viewPager);
+        if (adapter.getCount() > 0) tabLayout.setupWithViewPager(viewPager);
 
         viewPager.setCurrentItem(adapter.getCount() - 1);
         setupTabLayout();
@@ -77,9 +73,6 @@ public class FragmentParent extends Fragment {
         selectedTabPosition = viewPager.getCurrentItem();
         for (int i = 0; i < tabLayout.getTabCount(); i++) {
             tabLayout.getTabAt(i).setCustomView(adapter.getTabView(i));
-
         }
-
-
     }
 }
